@@ -1,2 +1,7 @@
 # stock-manager
-Spring Boot Application to manage stocks and orders:
+Approach of a Spring Boot Application to manage stocks and orders:
+
+- Spring Boot
+- SQL Server
+- Bootstrap
+- Webcomponents
