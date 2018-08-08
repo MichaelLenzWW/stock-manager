@@ -1,4 +1,4 @@
-import { currencyFormatter, getAmountColor } from '../common/Common.js';
+import { currencyFormatter, getAmountColor } from '../../../js/common/Common.js';
 
 export default class StockEntry extends HTMLElement {
   constructor() {
