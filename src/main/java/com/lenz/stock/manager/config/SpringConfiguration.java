@@ -24,21 +24,4 @@ import com.lenz.stock.manager.conditional.WindowsCondition;
 @EnableTransactionManagement
 @PropertySource(value = { "classpath:customProperties.properties" }, ignoreResourceNotFound = false)
 public class SpringConfiguration {
-
-  // ******************************************************************************************
-  // Conditional configuration of the OsInterface
-  // ******************************************************************************************
-  @Bean
-  @Conditional(LinuxCondition.class)
-  public OsInterface getLinuxImplementation() {
-    System.out.println("Linux Condition");
-    return new OsLinux();
-  }
-
-  @Bean
-  @Conditional(WindowsCondition.class)
-  public OsInterface getWindowsImplementation() {
-    System.out.println("Windows Condition");
-    return new OsWindows();
-  }
 }
