@@ -1,17 +1,9 @@
 package com.lenz.stock.manager.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import com.lenz.stock.manager.conditional.LinuxCondition;
-import com.lenz.stock.manager.conditional.OsInterface;
-import com.lenz.stock.manager.conditional.OsLinux;
-import com.lenz.stock.manager.conditional.OsWindows;
-import com.lenz.stock.manager.conditional.WindowsCondition;
 
 /**
  * Configuration class for Spring.

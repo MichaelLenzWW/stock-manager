@@ -45,7 +45,7 @@ export default class StockCard extends HTMLElement {
     this.innerHTML = `
     <div class="row">
     <div  class="col-md-12" style="color:white;">
-		  <div id="stock-card-${this.id}" class="card col-md-12" style="background: linear-gradient(to bottom right, #0099cc, #b3ecff);">
+		  <div id="stock-card-${this.id}" class="card col-md-12" style="background: linear-gradient(to bottom right, #669999, #c2d6d6);">
 		    <div class="card-body">
           <h5 class="card-title">${this.symbol} - ${this.name}
             <span style="float:right;${getAmountColor(profitOrLoss)}">P&L  ${currencyFormatter().format(profitOrLoss)}</span>
