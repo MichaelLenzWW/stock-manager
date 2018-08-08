@@ -1,14 +1,20 @@
 import Stock from './models/Stock.js';
 
-export default class StockList extends HTMLElement {
+export class StockList extends HTMLElement {
   constructor() {
     super();
+
+    // Attach event listener to load the ticker information
+    document.addEventListener('loadTicker', event => this.render());
   }
+
   connectedCallback() {
     this.render();
   }
+
   render() {
     var stockList = [];
+
     this.fetchTickerSymbols().then(symbols => {
       var html = '';
       if (symbols) {
@@ -30,4 +36,25 @@ export default class StockList extends HTMLElement {
     }
   }
 }
+
+/**
+ * Dispatch a cutom event, to load the ticker symbols.
+ *
+ * @since      1.0.0
+ * @access     public
+ *
+ * @param {Event} event     The source Event triggered the dispatch
+ */
+export function dispatchLoadTicker(event) {
+  console.log(`Dispatching loadTicker event.`);
+  document.dispatchEvent(
+    new CustomEvent('loadTicker', {
+      detail: event,
+      bubbles: true,
+      composed: true,
+      cancelable: false
+    })
+  );
+}
+
 customElements.define('stock-stock-list', StockList);

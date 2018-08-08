@@ -7,10 +7,10 @@
 					<stock-text-input id_name="name" label="Stock Name" placeholder="Enter the name for the ticker symbol..." required></stock-text-input>
 					<div class="form-group">
 						<button type="submit" class="btn btn-primary" style="margin: 10px">
-							<span class="fa fa-plus-circle " style="margin-right: 10px"></span>Add Ticker Symbol
+							<span class="fa fa-plus-circle " style="margin-right: 10px"></span>Add
 						</button>
-						<button type="button" class="btn btn-info" style="margin: 10px" onclick="fetchAndDisplayTickerSymbols() ">
-							<span class="fa fa-refresh" style="margin-right: 10px"></span>Load Ticker Symbols
+						<button type="button" class="btn btn-info" style="margin: 10px" onclick="window.dispatchLoadTicker(event)">
+							<span class="fa fa-refresh" style="margin-right: 10px"></span>Reload
 						</button>
 					</div>
 				</form>
