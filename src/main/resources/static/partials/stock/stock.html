@@ -1,0 +1,29 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-5">
+			<div class="jumbotron">
+				<form id="stockInputForm" onsubmit="addTickerSymbol()">
+					<stock-text-input id_name="symbol" label="Ticker Symbol" class_add="col-sm-3 input-uppercase" required></stock-text-input>
+					<stock-text-input id_name="name" label="Stock Name" placeholder="Enter the name for the ticker symbol..." required></stock-text-input>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary" style="margin: 10px">
+							<span class="fa fa-plus-circle " style="margin-right: 10px"></span>Add Ticker Symbol
+						</button>
+						<button type="button" class="btn btn-info" style="margin: 10px" onclick="fetchAndDisplayTickerSymbols() ">
+							<span class="fa fa-refresh" style="margin-right: 10px"></span>Load Ticker Symbols
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="col-md-7">
+			<div class="jumbotron">
+				<p>Display Portfolio Information....</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container-fluid">
+	<stock-stock-list></stock-stock-list>
+</div>
