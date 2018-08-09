@@ -1,4 +1,7 @@
-import { currencyFormatter, getAmountColor } from '../../../js/common/Common.js';
+import {
+  currencyFormatter,
+  getAmountColor
+} from '../../../js/common/Common.js';
 
 export default class StockEntry extends HTMLElement {
   constructor() {
@@ -55,19 +58,22 @@ export default class StockEntry extends HTMLElement {
 
   getHtmlForStockOrderHeader() {
     return `<div class="col-12">
-              <table class="table table-striped table-hover table-responsive">
+              <table class="table table-hover">
                 <thead>
                   <tr>
                     <th style="width: 5%" scope="col">#</th>
-                    <th style="width: 10%" scope="col">Purchase Date</th>
-                    <th style="width: 10%" scope="col">Sell Date</th>
-                    <th style="width: 10%" scope="col">Days</th>
-                    <th style="width: 10%" scope="col">Ticker</th>
-                    <th style="width: 10%" scope="col">Type</th>
-                    <th style="width: 10%" scope="col">Status</th>
-                    <th style="width: 10%" scope="col">Quantity</th>
-                    <th style="width: 15%" scope="col">Price</th>
-                    <th style="width: 15%" scope="col">Value</th>
+                    <th style="width: 6%" scope="col">Purchased</th>
+                    <th style="width: 6%" scope="col">Sold</th>
+                    <th style="width: 4%" scope="col">Days</th>
+                    <th style="width: 9%" scope="col">Ticker</th>
+                    <th style="width: 8%" scope="col">Type</th>
+                    <th style="width: 8%" scope="col">Status</th>
+                    <th style="width: 4%" scope="col">Quantity</th>
+                    <th style="width: 5%;text-align: right" scope="col">Price P.</th>
+                    <th style="width: 8%;text-align: right" scope="col">Value P.</th>
+                    <th style="width: 5%;text-align: right" scope="col">Price S.</th>
+                    <th style="width: 8%;text-align: right" scope="col">Value S.</th>
+                    <th style="width: 8%;text-align: right" scope="col">P & L</th>
                   </tr>
                 </thead>
                 <tbody id="stock-list-${this.id}"></tbody>
@@ -82,26 +88,44 @@ export default class StockEntry extends HTMLElement {
       if (!orders || orders.length === 0) {
         return;
       }
-
+      
       orders.forEach(order => {
+        const orderValues = this.getOrderValues(order);
         $(`#stock-list-${this.id}`).append(
           `<tr class="stock-order-${order.id}">
-                  <th scope="row">${order.id}</th>
-                  <td>${order.purchaseDate}</td>
-                  <td>${order.sellDate}</td>
-                  <td>${this.getDateDifference(new Date(order.purchaseDate), new Date(order.sellDate))}</td>
-                  <td>${this.symbol}</td>
-                  <td>${this.getOrderType(order)}</td>
-                  <td>${order.status}</td>
-                  <td>${order.quantity}</td>
-                  <td>${currencyFormatter().format(order.price)}</td>
-                  <td style="${getAmountColor(this.getOrderValue(order))}">${this.getOrderValueFormatted(order)}</td>
-              </tr>`
+          <th scope="row">${order.id}</th>
+          <td>${order.purchaseDate}</td>
+          <td>${order.sellDate}</td>
+          <td>${this.getDateDifference(new Date(order.purchaseDate), new Date(order.sellDate))}</td>
+          <td>${this.getSymbol(order)}</td>
+          <td>${this.getOrderType(order)}</td>
+          <td>${order.status}</td>
+          <td>${order.quantity}</td>
+          <td style="text-align: right">${currencyFormatter().format(order.purchasePrice)}</td>
+          <td style="text-align: right; ${this.getAmountColor(orderValues.purchaseValue)}">${this.getOrderValueFormatted(orderValues.purchaseValue)}</td>
+          <td style="text-align: right">${currencyFormatter().format(order.sellPrice)}</td>
+          <td style="text-align: right; ${this.getAmountColor(orderValues.sellValue)}">${this.getOrderValueFormatted(orderValues.sellValue)}</td>
+          <td style="text-align: right; ${this.getAmountColor(orderValues.profitOrLoss)}">${this.getOrderValueFormatted(orderValues.profitOrLoss)}</td>
+                        </tr>`
         );
       });
     });
   }
+  getSymbol(order) {
 
+    var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const strikeDate = new Date(order.strikeDate);
+
+    if (this.isOption(order)) {
+      console.log(strikeDate);
+      console.log();
+      console.log();
+
+      return this.symbol + ' ' + strikeDate.getDate() + months[strikeDate.getMonth()] + strikeDate.getFullYear() + ' ' + order.strikePrice;
+    }
+
+    return this.symbol;
+  }
   getOrderType(order) {
     var orderType = 'Share';
     if (this.isOption(order)) {
@@ -110,31 +134,59 @@ export default class StockEntry extends HTMLElement {
     return orderType;
   }
 
-  getOrderValue(order) {
-    var value = order.quantity * order.price;
+  getOrderValues(order) {
+    const purchaseValue = this.calculateOrderValue(order.purchasePrice, order);
+    const sellValue = this.calculateOrderValue(order.sellPrice, order);
+
+    return {
+      purchaseValue: purchaseValue,
+      sellValue: sellValue,
+      profitOrLoss: this.calculateProfitOrLoss(purchaseValue, sellValue, order)
+    };
+  }
+
+  calculateOrderValue(value, order) {
+
+    if (!value) {
+      return 0;
+    }
+    var calculatedValue = order.quantity * value;
 
     // On option contract is 100
     if (this.isOption(order)) {
-      value = value * 100;
+      calculatedValue = calculatedValue * 100;
     }
 
-    // Negative quantity => We sold something, so we received money
-    if (order.quantity < 0) {
-      value = value * -1;
+    //  We sold something, so we received money
+    if (this.isSell(order)) {
+      calculatedValue = calculatedValue * -1;
     }
-
-    return value;
+    return calculatedValue;
   }
 
+  calculateProfitOrLoss(purchaseValue, sellValue, order) {
+
+    var profitOrLoss = this.isSell(order) ? purchaseValue - sellValue : sellValue - purchaseValue;
+    profitOrLoss = profitOrLoss - order.purchaseProvision;
+    profitOrLoss = profitOrLoss - order.sellProvision;
+
+    return profitOrLoss;
+  }
+// Set color for the amount (positive/negative), also format the value
+getAmountColor(amount) {
+  return amount >= 0 ? 'color:green;' : 'color:red;';
+}
   getDateDifference(dateFrom, dateTo) {
     return Math.floor(
       (Date.UTC(dateTo.getFullYear(), dateTo.getMonth(), dateTo.getDate()) - Date.UTC(dateFrom.getFullYear(), dateFrom.getMonth(), dateFrom.getDate())) / (1000 * 60 * 60 * 24)
     );
   }
-  getOrderValueFormatted(order) {
-    return currencyFormatter().format(this.getOrderValue(order));
+  getOrderValueFormatted(value) {
+    return currencyFormatter().format(value);
   }
-
+  isSell(order) {
+    return order.quantity < 0;
+  }
   isOption(order) {
     return order.type === 'STOCK_OPTION';
   }

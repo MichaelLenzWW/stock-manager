@@ -69,21 +69,44 @@ public class DemoApp {
 			List<Order> orders = new ArrayList<>();
 
 			orders.add(createMacysPut(1l, 3l));
-			orders.add(createPGCall01(2l, 1l));
-			orders.add(createPGCall02(3l, 1l));
+			orders.add(createPGStock01(2l,1l));
+			orders.add(createPGCall01(3l, 1l));	
+			orders.add(createPGCall02(4l, 1l));
 
 			orders.forEach(entry -> repository.save(entry));
 		};
 	}
 
+	private Order createPGStock01(final Long id, final Long stockId) {
+		Order order = new Order("1", id, stockId);
+		order.setType(OrderType.SHARE);
+		order.setQuantity(100.00);
+		order.setCurrency("USD");
+		order.setPurchasePrice(73.59);
+		order.setPurchaseProvision(1.00);
+		order.setSellPrice(75.50);
+		order.setSellProvision(0.11);
+
+		Calendar cal = new GregorianCalendar();
+		cal.set(2018, 4, 14);
+		order.setPurchaseDate(cal.getTime());
+
+		cal.set(2018, 5, 22);
+		order.setSellDate(cal.getTime());
+
+		order.setStatus(OrderStatus.ASSIGNED);
+		
+		return order;
+	}
+
 	private Order createMacysPut(final Long id, final Long stockId) {
 		Order order = new Order("1", id, stockId);
 		order.setType(OrderType.STOCK_OPTION);
-		order.setQuantity(1.00);
+		order.setQuantity(-1.00);
 		order.setCurrency("USD");
-		order.setPrice(0.18);
-		order.setProvisionPurchase(1.09);
-		order.setProvisionSell(0.00);
+		order.setPurchasePrice(0.33);
+		order.setPurchaseProvision(0.79);
+		order.setSellProvision(0.00);
 
 		Calendar cal = new GregorianCalendar();
 		cal.set(2018, 4, 21);
@@ -94,7 +117,7 @@ public class DemoApp {
 
 		order.setStatus(OrderStatus.EXPIRED);
 		order.setOptionType(OptionType.PUT);
-		order.setStrikePrice(74.00);
+		order.setStrikePrice(38.50);
 
 		cal.set(2018, 4, 25);
 		order.setStrikeDate(cal.getTime());
@@ -106,22 +129,23 @@ public class DemoApp {
 		order.setType(OrderType.STOCK_OPTION);
 		order.setQuantity(-1.00);
 		order.setCurrency("USD");
-		order.setPrice(0.33);
-		order.setProvisionPurchase(0.79);
-		order.setProvisionSell(0.00);
+		order.setPurchasePrice(0.16);
+		order.setPurchaseProvision(0.79);
+		order.setSellPrice(0.0);
+		order.setSellProvision(0.00);
 
 		Calendar cal = new GregorianCalendar();
-		cal.set(2018, 7, 2);
+		cal.set(2018, 7, 02);
 		order.setPurchaseDate(cal.getTime());
 
-		cal.set(2018, 7, 3);
+		cal.set(2018, 7, 03);
 		order.setSellDate(cal.getTime());
 
 		order.setStatus(OrderStatus.EXPIRED);
-		order.setOptionType(OptionType.CALL);
-		order.setStrikePrice(38.50);
+		order.setOptionType(OptionType.PUT);
+		order.setStrikePrice(74.00);
 
-		cal.set(2018, 7, 3);
+		cal.set(2018, 3, 07);
 		order.setStrikeDate(cal.getTime());
 		return order;
 	}
@@ -131,22 +155,23 @@ public class DemoApp {
 		order.setType(OrderType.STOCK_OPTION);
 		order.setQuantity(-1.00);
 		order.setCurrency("USD");
-		order.setPrice(0.33);
-		order.setProvisionPurchase(0.79);
-		order.setProvisionSell(0.00);
+		order.setPurchasePrice(0.18);
+		order.setPurchaseProvision(1.09);
+		order.setSellPrice(0.0);
+		order.setSellProvision(0.00);
 
 		Calendar cal = new GregorianCalendar();
-		cal.set(2018, 7, 2);
+		cal.set(2018, 4, 21);
 		order.setPurchaseDate(cal.getTime());
 
-		cal.set(2018, 7, 3);
+		cal.set(2018, 4, 25);
 		order.setSellDate(cal.getTime());
 
 		order.setStatus(OrderStatus.EXPIRED);
 		order.setOptionType(OptionType.CALL);
-		order.setStrikePrice(38.50);
+		order.setStrikePrice(75.00);
 
-		cal.set(2018, 7, 3);
+		cal.set(2018, 4, 25);
 		order.setStrikeDate(cal.getTime());
 		return order;
 	}

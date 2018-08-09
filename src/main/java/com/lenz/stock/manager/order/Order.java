@@ -14,10 +14,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.lenz.stock.manager.common.BaseModel;
 import com.lenz.stock.manager.common.OptionType;
-import com.lenz.stock.manager.util.JsonDateSerializer;
 
 /**
  * @author Michael Lenz
@@ -43,23 +41,26 @@ public class Order extends BaseModel {
     @Column(name = "CURRENCY", nullable = false)
     private String currency;
 
-    @Column(name = "PRICE", nullable = false)
-    private Double price;
+    @Column(name = "PURCHASE_PRICE", nullable = false)
+    private Double purchasePrice;
 
-    @Column(name = "PROVISION_PURCHASE")
-    private Double provisionPurchase;
+    @Column(name = "SELL_PRICE")
+    private Double sellPrice;
 
-    @Column(name = "PROVISION_SELL")
-    private Double provisionSell;
+    @Column(name = "PURCHASE_PROVISION")
+    private Double purchaseProvision;
 
-    @JsonSerialize(using=JsonDateSerializer.class)
+    @Column(name = "SELL_PROVISION")
+    private Double sellProvision;
+
+//    @JsonSerialize(using=JsonDateSerializer.class)
     @Temporal(TemporalType.DATE)
     @Column(name = "PURCHASE_DATE", nullable = false)
     private Date purchaseDate;
 
-    @JsonSerialize(using=JsonDateSerializer.class)
+//    @JsonSerialize(using=JsonDateSerializer.class)
     @Temporal(TemporalType.DATE)
-    @Column(name = "SELL_DATE", nullable = false)
+    @Column(name = "SELL_DATE")
     private Date sellDate;
 
     @Enumerated(EnumType.STRING)
@@ -73,7 +74,7 @@ public class Order extends BaseModel {
     @Column(name = "STRIKE_PRICE")
     private Double strikePrice;
 
-    @JsonSerialize(using=JsonDateSerializer.class)
+    //@JsonSerialize(using=JsonDateSerializer.class)
     @Temporal(TemporalType.DATE)
     @Column(name = "STRIKE_DATE")
     private Date strikeDate;
@@ -167,12 +168,20 @@ public class Order extends BaseModel {
 	this.quantity = quantity;
     }
 
-    public Double getPrice() {
-	return price;
+    public Double getPurchasePrice() {
+	return purchasePrice;
     }
 
-    public void setPrice(Double price) {
-	this.price = price;
+    public void setPurchasePrice(Double price) {
+	this.purchasePrice = price;
+    }
+
+    public Double getSellPrice() {
+	return sellPrice;
+    }
+
+    public void setSellPrice(Double price) {
+	this.sellPrice = price;
     }
 
     public String getCurrency() {
@@ -183,20 +192,20 @@ public class Order extends BaseModel {
 	this.currency = currency;
     }
 
-    public Double getProvisionPurchase() {
-	return provisionPurchase;
+    public Double getPurchaseProvision() {
+	return purchaseProvision;
     }
 
-    public void setProvisionPurchase(Double provisionPurchase) {
-	this.provisionPurchase = provisionPurchase;
+    public void setPurchaseProvision(Double provision) {
+	this.purchaseProvision = provision;
     }
 
-    public Double getProvisionSell() {
-	return provisionSell;
+    public Double getSellProvision() {
+	return sellProvision;
     }
 
-    public void setProvisionSell(Double provisionSell) {
-	this.provisionSell = provisionSell;
+    public void setSellProvision(Double provision) {
+	this.sellProvision = provision;
     }
 
     public Date getPurchaseDate() {
