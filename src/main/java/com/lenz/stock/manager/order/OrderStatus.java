@@ -2,7 +2,7 @@ package com.lenz.stock.manager.order;
 
 public enum OrderStatus {
 
-    BOUGHT("PURCHASED", "Purchased"),
+    PURCHASED("PURCHASED", "Purchased"),
     SOLD("SOLD", "Sold"),
     ROLLED("ROLLED", "Rolled"),
     EXPIRED("EXPIRED", "Expired"),

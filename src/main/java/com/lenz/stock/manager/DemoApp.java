@@ -69,8 +69,8 @@ public class DemoApp {
 			List<Order> orders = new ArrayList<>();
 
 			orders.add(createMacysPut(1l, 3l));
-			orders.add(createPGStock01(2l,1l));
-			orders.add(createPGCall01(3l, 1l));	
+			orders.add(createPGStock01(2l, 1l));
+			orders.add(createPGCall01(3l, 1l));
 			orders.add(createPGCall02(4l, 1l));
 
 			orders.forEach(entry -> repository.save(entry));
@@ -95,7 +95,7 @@ public class DemoApp {
 		order.setSellDate(cal.getTime());
 
 		order.setStatus(OrderStatus.ASSIGNED);
-		
+
 		return order;
 	}
 
@@ -164,10 +164,7 @@ public class DemoApp {
 		cal.set(2018, 4, 21);
 		order.setPurchaseDate(cal.getTime());
 
-		cal.set(2018, 4, 25);
-		order.setSellDate(cal.getTime());
-
-		order.setStatus(OrderStatus.EXPIRED);
+		order.setStatus(OrderStatus.PURCHASED);
 		order.setOptionType(OptionType.CALL);
 		order.setStrikePrice(75.00);
 
