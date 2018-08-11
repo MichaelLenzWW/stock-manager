@@ -5,7 +5,7 @@ export default class StockService {
     console.log(`Adding Ticker Symbol [symbol] - [name].`);
 
     const url = 'http://localhost:8081/stock';
-    const stock = new Stock('1', symbol, name);
+    const stock = new Stock(null, '1', symbol, name);
 
     // Perform creating the ticker symbol
     fetch(url, {

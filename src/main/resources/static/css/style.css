@@ -1,31 +1,39 @@
 .jumbotron {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-bottom: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 #content {
-    margin-top: 65px;
+  margin-top: 65px;
 }
 
 .input-uppercase {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 .input-lowercase {
-    text-transform: lowercase; 
+  text-transform: lowercase;
 }
 
 .footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: #343a40;
-    color: white;
-    text-align: left;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #343a40;
+  color: white;
+  text-align: left;
 }
 
-.action-buttons{
-	text-align:right;
+.action-buttons {
+  text-align: right;
+}
+
+.openOrder::before {
+  content: '';
+  background: green;
+  display: block;
+  width: 5px;
+  height: 5px;
 }

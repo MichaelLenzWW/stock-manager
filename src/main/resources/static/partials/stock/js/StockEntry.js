@@ -1,7 +1,4 @@
-import {
-  currencyFormatter,
-  getAmountColor
-} from '../../../js/common/Common.js';
+import { currencyFormatter, getAmountColor } from '../../../js/common/Common.js';
 
 export default class StockEntry extends HTMLElement {
   constructor() {
@@ -88,39 +85,57 @@ export default class StockEntry extends HTMLElement {
       if (!orders || orders.length === 0) {
         return;
       }
-      
+
+      let profitOrLossSum = 0;
+
       orders.forEach(order => {
         const orderValues = this.getOrderValues(order);
+        profitOrLossSum += orderValues.profitOrLoss;
+
+        let openOrder = !order.sellDate ? 'openOrder' : '';
+        let days = this.getDateDifference(order.purchaseDate, order.sellDate);
+
         $(`#stock-list-${this.id}`).append(
           `<tr class="stock-order-${order.id}">
           <th scope="row">${order.id}</th>
-          <td>${order.purchaseDate}</td>
-          <td>${order.sellDate}</td>
-          <td>${this.getDateDifference(new Date(order.purchaseDate), new Date(order.sellDate))}</td>
+          <td class="${openOrder}">${order.purchaseDate}</td>
+          <td>${order.sellDate != null ? order.sellDate : ''}</td>
+          <td>${days > 0 ? days : ''}</td>
           <td>${this.getSymbol(order)}</td>
           <td>${this.getOrderType(order)}</td>
           <td>${order.status}</td>
           <td>${order.quantity}</td>
           <td style="text-align: right">${currencyFormatter().format(order.purchasePrice)}</td>
-          <td style="text-align: right; ${this.getAmountColor(orderValues.purchaseValue)}">${this.getOrderValueFormatted(orderValues.purchaseValue)}</td>
+          <td style="text-align: right; ${this.getAmountColor(orderValues.purchaseValue)}">${this.getOrderValueFormatted(
+            orderValues.purchaseValue
+          )}</td>
           <td style="text-align: right">${currencyFormatter().format(order.sellPrice)}</td>
           <td style="text-align: right; ${this.getAmountColor(orderValues.sellValue)}">${this.getOrderValueFormatted(orderValues.sellValue)}</td>
-          <td style="text-align: right; ${this.getAmountColor(orderValues.profitOrLoss)}">${this.getOrderValueFormatted(orderValues.profitOrLoss)}</td>
+          <td style="text-align: right; ${this.getAmountColor(orderValues.profitOrLoss)}">${this.getOrderValueFormatted(
+            orderValues.profitOrLoss
+          )}</td>
                         </tr>`
         );
       });
+      this.dispatchProfitOrLossSum(profitOrLossSum);
     });
   }
-  getSymbol(order) {
 
-    var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  dispatchProfitOrLossSum(profitOrLoss) {
+    let event = new CustomEvent('calculatedProfitOrLoss', {
+      detail: {
+        id: this.id,
+        profitOrLoss: profitOrLoss
+      }
+    });
+    document.dispatchEvent(event);
+  }
+
+  getSymbol(order) {
+    var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
     const strikeDate = new Date(order.strikeDate);
 
     if (this.isOption(order)) {
-      console.log(strikeDate);
-      console.log();
-      console.log();
-
       return this.symbol + ' ' + strikeDate.getDate() + months[strikeDate.getMonth()] + strikeDate.getFullYear() + ' ' + order.strikePrice;
     }
 
@@ -146,7 +161,6 @@ export default class StockEntry extends HTMLElement {
   }
 
   calculateOrderValue(value, order) {
-
     if (!value) {
       return 0;
     }
@@ -165,20 +179,33 @@ export default class StockEntry extends HTMLElement {
   }
 
   calculateProfitOrLoss(purchaseValue, sellValue, order) {
-
     var profitOrLoss = this.isSell(order) ? purchaseValue - sellValue : sellValue - purchaseValue;
     profitOrLoss = profitOrLoss - order.purchaseProvision;
     profitOrLoss = profitOrLoss - order.sellProvision;
 
     return profitOrLoss;
   }
-// Set color for the amount (positive/negative), also format the value
-getAmountColor(amount) {
-  return amount >= 0 ? 'color:green;' : 'color:red;';
-}
+  // Set color for the amount (positive/negative), also format the value
+  getAmountColor(amount) {
+    return amount >= 0 ? 'color:green;' : 'color:red;';
+  }
   getDateDifference(dateFrom, dateTo) {
+    // No date from/to given ==> Nothing to calculate
+    if (!dateFrom || dateFrom === null || (!dateTo || dateTo === null)) {
+      return 0;
+    }
+    // Date from must not be greate date to
+    if (dateFrom > dateTo) {
+      return 0;
+    }
+
+    let dateFromDate = new Date(dateFrom);
+    let dateToDate = new Date(dateTo);
+
     return Math.floor(
-      (Date.UTC(dateTo.getFullYear(), dateTo.getMonth(), dateTo.getDate()) - Date.UTC(dateFrom.getFullYear(), dateFrom.getMonth(), dateFrom.getDate())) / (1000 * 60 * 60 * 24)
+      (Date.UTC(dateToDate.getFullYear(), dateToDate.getMonth(), dateToDate.getDate()) -
+        Date.UTC(dateFromDate.getFullYear(), dateFromDate.getMonth(), dateFromDate.getDate())) /
+        (1000 * 60 * 60 * 24)
     );
   }
   getOrderValueFormatted(value) {

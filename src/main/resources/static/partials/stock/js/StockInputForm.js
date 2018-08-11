@@ -14,7 +14,7 @@ export class StockInputForm extends HTMLElement {
     const refreshButton = document.querySelector('#refreshButton');
     refreshButton.addEventListener('click', event => dispatchLoadTicker());
 
-    //
+    // Add the ticker symbol, when add button is clicked
     const stockInputForm = document.querySelector('#stockInputForm');
     stockInputForm.addEventListener('submit', event => {
       const symbol = document.querySelector('#symbol').value.toUpperCase();
