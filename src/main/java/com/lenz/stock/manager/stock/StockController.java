@@ -26,121 +26,125 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 public class StockController {
 
-  private static final String PATH = "/stock";
+	private static final String PATH = "/stock";
 
-  @Autowired
-  private StockService stockService;
+	@Autowired
+	private StockService stockService;
 
-  private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-  /**
-   * Get a {@link List} of all existing {@link Stock}.
-   * 
-   * @param request
-   * 
-   * @param response
-   * 
-   * @return the {@link List} of {@link Stock}
-   */
-  @GetMapping(PATH)
-  public List<Stock> getAllStocks(final HttpServletRequest request, final HttpServletResponse response) {
-    log.info("Receiving stocks from the database.");
-    List<Stock> stocks = stockService.findAll();
-    log.info(String.format("Received '%d' stocks from the database.", stocks.size()));
-    return stocks;
-  }
+	/**
+	 * Get a {@link List} of all existing {@link Stock}.
+	 * 
+	 * @param request
+	 * 
+	 * @param response
+	 * 
+	 * @return the {@link List} of {@link Stock}
+	 */
+	@GetMapping(PATH)
+	public List<Stock> getAllStocks(final HttpServletRequest request, final HttpServletResponse response) {
+		log.info("Receiving stocks from the database.");
+		List<Stock> stocks = stockService.findAll();
+		log.info(String.format("Received '%d' stocks from the database.", stocks.size()));
+		return stocks;
+	}
 
-  /**
-   * Gets the {@link Stock} for the given id.
-   * 
-   * @param request
-   * 
-   * @param response
-   * 
-   * @param id
-   *          the id of the {@link Stock} to be returned
-   * 
-   * @return The {@link Stock} for the given id.<br/>
-   *         Will return NULL, if no stock is found for the given id
-   */
-  @GetMapping(PATH + "/{id}")
-  public Stock getStock(final HttpServletRequest request, final HttpServletResponse response, @PathVariable final Long id) {
-    return stockService.getById(id);
-  }
+	/**
+	 * Gets the {@link Stock} for the given id.
+	 * 
+	 * @param request
+	 * 
+	 * @param response
+	 * 
+	 * @param id
+	 *            the id of the {@link Stock} to be returned
+	 * 
+	 * @return The {@link Stock} for the given id.<br/>
+	 *         Will return NULL, if no stock is found for the given id
+	 */
+	@GetMapping(PATH + "/{id}")
+	public Stock getStock(final HttpServletRequest request, final HttpServletResponse response,
+			@PathVariable final Long id) {
+		return stockService.getById(id);
+	}
 
-  /**
-   * Updates a {@link Stock}.
-   * 
-   * @param request
-   * 
-   * @param response
-   * 
-   * @param stock
-   *          the {@link Stock} to be updated
-   * 
-   * @return the added {@link Stock}
-   */
-  @PutMapping(PATH)
-  public Stock updateStock(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final Stock stock) {
-    return stockService.update(stock);
-  }
+	/**
+	 * Updates a {@link Stock}.
+	 * 
+	 * @param request
+	 * 
+	 * @param response
+	 * 
+	 * @param stock
+	 *            the {@link Stock} to be updated
+	 * 
+	 * @return the added {@link Stock}
+	 */
+	@PutMapping(PATH)
+	public Stock updateStock(final HttpServletRequest request, final HttpServletResponse response,
+			@RequestBody final Stock stock) {
+		return stockService.update(stock);
+	}
 
-  /**
-   * Adds a {@link Stock}.
-   * 
-   * @param request
-   * 
-   * @param response
-   * 
-   * @param stock
-   *          the {@link Stock} to be added
-   * 
-   * @return the added {@link Stock}
-   */
-  @PostMapping(PATH)
-  public Stock addStock(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final Stock stock) {
-    try {
-      return stockService.add(stock);
-    } catch (Exception exception) {
-      try {
-        response.sendError(HttpServletResponse.SC_CONFLICT, exception.getMessage());
-      } catch (IOException e) {
-        // Nothing to do here
-      }
-      return null;
-    }
-  }
+	/**
+	 * Adds a {@link Stock}.
+	 * 
+	 * @param request
+	 * 
+	 * @param response
+	 * 
+	 * @param stock
+	 *            the {@link Stock} to be added
+	 * 
+	 * @return the added {@link Stock}
+	 */
+	@PostMapping(PATH)
+	public Stock addStock(final HttpServletRequest request, final HttpServletResponse response,
+			@RequestBody final Stock stock) {
+		try {
+			return stockService.add(stock);
+		} catch (Exception exception) {
+			try {
+				response.sendError(HttpServletResponse.SC_CONFLICT, exception.getMessage());
+			} catch (IOException e) {
+				// Nothing to do here
+			}
+			return null;
+		}
+	}
 
-  /**
-   * Deletes a {@link Stock}.
-   * 
-   * @param request
-   * 
-   * @param response
-   * 
-   * @param id
-   *          the id of the {@link Stock} to be deleted
-   */
-  @DeleteMapping(PATH + "/{id}")
-  public void deleteStock(final HttpServletRequest request, final HttpServletResponse response, @PathVariable final Long id) {
-    try {
-      stockService.deleteById(id);
-    } catch (Exception exception) {
-      try {
-        response.sendError(HttpServletResponse.SC_CONFLICT, exception.getMessage());
-      } catch (IOException e) {
-        // Nothing to do here
-      }
-    }
-  }
+	/**
+	 * Deletes a {@link Stock}.
+	 * 
+	 * @param request
+	 * 
+	 * @param response
+	 * 
+	 * @param id
+	 *            the id of the {@link Stock} to be deleted
+	 */
+	@DeleteMapping(PATH + "/{id}")
+	public void deleteStock(final HttpServletRequest request, final HttpServletResponse response,
+			@PathVariable final Long id) {
+		try {
+			stockService.deleteById(id);
+		} catch (Exception exception) {
+			try {
+				response.sendError(HttpServletResponse.SC_CONFLICT, exception.getMessage());
+			} catch (IOException e) {
+				// Nothing to do here
+			}
+		}
+	}
 
-  /**
-   * Setter for the stockService.
-   * 
-   * @param stockService
-   *          the stockService to set
-   */
-  public void setStockService(final StockService stockService) {
-    this.stockService = stockService;
-  }
+	/**
+	 * Setter for the stockService.
+	 * 
+	 * @param stockService
+	 *            the stockService to set
+	 */
+	public void setStockService(final StockService stockService) {
+		this.stockService = stockService;
+	}
 }
